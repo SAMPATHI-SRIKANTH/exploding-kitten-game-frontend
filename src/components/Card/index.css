@@ -1,0 +1,12 @@
+.card {
+  width: 200px;
+  height: 200px;
+  background-color: blueviolet;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card h1 {
+  font-size: 30px;
+  color: aqua;
+}
