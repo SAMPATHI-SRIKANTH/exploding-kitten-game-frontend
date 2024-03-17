@@ -1,42 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { handleUserName } from "../../features/user/userSlice";
-import { handleStartGame } from "../../features/game/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  handleUserName,
+  handlePoints,
+  handleStartGame,
+} from "../../features/game/gameSlice";
 
 import "./index.css";
 
 const Home = () => {
-  const [userName, setUserName] = useState("");
+  const userName = useSelector((state) => state.game.userName);
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+  console.log("home page");
+  useEffect(() => {
+    if (userName !== "") {
+      navigate("/game");
+    }
+  }, [userName, navigate]);
 
   const handleInput = (e) => {
-    setUserName(e.target.value);
+    setName(e.target.value);
   };
 
   const onClickStartGame = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    if (userName !== "") {
+    e.preventDefault();
+    if (name !== "") {
       try {
         const response = await fetch(
-          "https://exploding-kitten-game-backend.onrender.com/register",
+          "https://exploding-kitten-game-backend-production.up.railway.app/register",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username: userName }),
+            body: JSON.stringify({ username: name }),
           }
         );
-        console.log(response);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
 
         const data = await response.json();
-        dispatch(handleUserName(data.username));
+        console.log(data, "data from server");
+        dispatch(handleUserName(data.userName));
+        dispatch(handlePoints(data.points));
         dispatch(handleStartGame());
         navigate("/game");
       } catch (error) {
@@ -54,7 +66,7 @@ const Home = () => {
           type="text"
           id="username"
           placeholder="Username"
-          value={userName}
+          value={name}
           onChange={handleInput}
           required
         />

@@ -2,3 +2,23 @@
   margin: 10px auto;
   gap: 20px;
 }
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.game-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.save-btn,
+.exit-btn {
+  width: 100px;
+  height: 45px;
+}
+h1 {
+  font-size: 20px;
+}

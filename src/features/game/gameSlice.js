@@ -9,10 +9,10 @@ const CardNames = {
 
 const shuffleCards = (newArray) => {
   let array = [...newArray];
-  console.log(array, "shuffled fn array ");
+
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
-    console.log(i, j, "i j");
+
     let temp = array[i];
     array[i] = array[j];
     array[j] = temp;
@@ -43,24 +43,44 @@ const generateRandomDeck = () => {
 };
 
 const initialState = {
+  userName: "",
+  points: 0,
   deck: generateRandomDeck(),
   drawnCards: [],
   startGame: false,
   defuseCard: 0,
-  gameStatus: "ongoing", // 'ongoing', 'won', 'lost'
+  gameStatus: "ongoing",
+  activeCard: "",
 };
+const persistedStateJSON = localStorage.getItem("gameState");
+
+const persistedState = persistedStateJSON
+  ? JSON.parse(persistedStateJSON)
+  : initialState;
 
 const gameSlice = createSlice({
   name: "game",
-  initialState,
+  initialState: persistedState,
   reducers: {
+    wonGame: (state) => {
+      state.points += 1;
+    },
+    handleUserName: (state, action) => {
+      state.userName = action.payload;
+    },
+    handlePoints: (state, action) => {
+      state.points = action.payload;
+    },
+    handleActiveCard: (state, action) => {
+      state.activeCard = action.payload;
+    },
     drawCard: (state, action) => {
       const drawnCard = action.payload;
-      console.log(drawnCard);
+
       let drawnCardIndex = state.deck.findIndex(
         (card) => card.cardName === drawnCard
       );
-      // console.log(state.deck[drawnCardIndex].cardName);
+
       switch (drawnCard) {
         case CardNames.CAT:
           state.deck.splice(drawnCardIndex, 1);
@@ -75,7 +95,12 @@ const gameSlice = createSlice({
           console.log(CardNames.EXPLODING_KITTEN);
           state.deck.splice(drawnCardIndex, 1);
           state.drawnCards.push(drawnCard);
-          state.gameStatus = "lost";
+          if (state.defuseCard > 0) {
+            state.defuseCard -= 1;
+          } else {
+            state.gameStatus = "lost";
+          }
+
           break;
         case CardNames.SHUFFLE:
           state.deck = generateRandomDeck();
@@ -90,18 +115,28 @@ const gameSlice = createSlice({
     handleStartGame: (state) => {
       state.startGame = true;
     },
+    restartGame: (state) => {
+      state.deck = generateRandomDeck();
+      state.gameStatus = "ongoing";
+      state.defuseCard = 0;
+      state.drawnCards = [];
+      state.activeCard = "";
+    },
+    exitGame: (state) => {
+      return initialState;
+    },
   },
 });
 
-export const { drawCard, handleStartGame } = gameSlice.actions;
+export const {
+  drawCard,
+  handleStartGame,
+  wonGame,
+  handleUserName,
+  restartGame,
+  handlePoints,
+  handleActiveCard,
+  exitGame,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;
-
-// displayedCards -> [cat,defuse,shuffle,bomb,cat]
-
-// removedCards  -> []
-
-// defuseCards:1 if find defuse card then defuseCard++
-
-// card == bomb then exit game loss
-//  if displayCards == 0 then player wins
