@@ -2,7 +2,7 @@
 
 This is a React-based web application for playing the Exploding Kittens card game.
 
-
+This is url of the game [here](https://exploding-kitten-game-frontend.vercel.app/)
 
 ## Features
 
@@ -19,6 +19,7 @@ To run this project locally, follow these steps:
 2. Navigate to the project directory.
 3. Install dependencies using `npm install`.
 4. Start the development server using `npm start`.
+5. Debug  by redux extension
 
 ## Usage
 
@@ -28,6 +29,12 @@ Once the development server is running, you can access the application in your w
 - `/game`: Game page to play the Exploding Kittens game.
 -  Save game using save game button then user came where he left game
 -  Exit Game using exit game button
+
+##   Rules 
+- If the card drawn from the deck is a cat card, then the card is removed from the deck.
+- If the card is exploding kitten (bomb) then the player loses the game.
+- If the card is a defusing card, then the card is removed from the deck. This card can be used to defuse one bomb that may come in subsequent cards drawn from the deck.
+- If the card is a shuffle card, then the game is restarted and the deck is filled with 5 cards again.
 
 ## API Documentation
 
